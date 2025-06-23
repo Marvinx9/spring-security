@@ -300,6 +300,11 @@ body {
     width: 100%;
 }
 
+.remember-me {
+    display: flex;
+    align-items: center;
+}
+
 .form-group {
     margin-bottom: 20px;
 }
