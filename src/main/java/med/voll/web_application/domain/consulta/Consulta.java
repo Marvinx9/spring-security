@@ -12,7 +12,7 @@ public class Consulta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String paciente;
+    private String paciente_id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Medico medico;
@@ -28,7 +28,7 @@ public class Consulta {
 
     public void modificarDados(Medico medico, DadosAgendamentoConsulta dados) {
         this.medico = medico;
-        this.paciente = dados.paciente();
+        this.paciente_id = dados.paciente_id();
         this.data = dados.data();
     }
 
@@ -37,7 +37,7 @@ public class Consulta {
     }
 
     public String getPaciente() {
-        return paciente;
+        return paciente_id;
     }
 
     public Medico getMedico() {

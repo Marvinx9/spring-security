@@ -12,7 +12,7 @@ public record DadosAgendamentoConsulta(
         Long idMedico,
 
         @NotNull
-        String paciente,
+        String paciente_id,
 
         @NotNull
         @Future
