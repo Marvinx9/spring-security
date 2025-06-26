@@ -1,8 +1,5 @@
 package med.voll.web_application.domain.usuario;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,9 +21,13 @@ public class UsuarioService implements UserDetailsService {
         return usuarioRepository.findByEmailIgnoreCase(username).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado!"));
     }
 
-    public void salvarUsuario(String nome, String email, String senha) {
+    public Long salvarUsuario(String nome, String email, String senha) {
         String senhaCriptografada = encriptador.encode(senha);
+        Usuario usuario = usuarioRepository.save(new Usuario(nome, email, senhaCriptografada));
+        return usuario.getId();
+    }
 
-        usuarioRepository.save(new Usuario(nome, email, senhaCriptografada));
+    public void excluir(Long id) {
+        usuarioRepository.deleteById(id);
     }
 }
