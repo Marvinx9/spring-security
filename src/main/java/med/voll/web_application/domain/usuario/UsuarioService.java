@@ -21,9 +21,9 @@ public class UsuarioService implements UserDetailsService {
         return usuarioRepository.findByEmailIgnoreCase(username).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado!"));
     }
 
-    public Long salvarUsuario(String nome, String email, String senha) {
+    public Long salvarUsuario(String nome, String email, String senha, Perfil perfil) {
         String senhaCriptografada = encriptador.encode(senha);
-        Usuario usuario = usuarioRepository.save(new Usuario(nome, email, senhaCriptografada));
+        Usuario usuario = usuarioRepository.save(new Usuario(nome, email, senhaCriptografada, perfil));
         return usuario.getId();
     }
 
