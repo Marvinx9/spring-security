@@ -34,6 +34,7 @@ public class ConsultaController {
     @GetMapping
     public String carregarPaginaListagem(@PageableDefault Pageable paginacao, Model model) {
         var consultasAtivas = service.listar(paginacao);
+        System.out.println("----===--" + consultasAtivas);
         model.addAttribute("consultas", consultasAtivas);
         return PAGINA_LISTAGEM;
     }
