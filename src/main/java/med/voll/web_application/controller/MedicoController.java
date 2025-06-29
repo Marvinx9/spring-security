@@ -6,9 +6,11 @@ import med.voll.web_application.domain.medico.DadosCadastroMedico;
 import med.voll.web_application.domain.medico.DadosListagemMedico;
 import med.voll.web_application.domain.medico.Especialidade;
 import med.voll.web_application.domain.medico.MedicoService;
+import med.voll.web_application.domain.usuario.Usuario;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -56,9 +58,10 @@ public class MedicoController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ATENDENTE')")
-    public String cadastrar(@Valid @ModelAttribute("dados") DadosCadastroMedico dados, BindingResult result, Model model) {
+    @PreAuthorize("hasRole('ATENDENTE') || hasRole('PACIENTE')")
+    public String cadastrar(@Valid @ModelAttribute("dados") DadosCadastroMedico dados, BindingResult result, Model model, @AuthenticationPrincipal Usuario logado) {
         if (result.hasErrors()) {
+            model.addAttribute("dados", dados);
             model.addAttribute("dados", dados);
             return PAGINA_CADASTRO;
         }
