@@ -29,9 +29,10 @@ public class UsuarioService implements UserDetailsService {
     }
 
     public Long salvarUsuario(String nome, String email, String senha, Perfil perfil) {
-        //String primeiraSenha = UUID.randomUUID().toString().substring(0, 8);
-        String senhaCriptografada = encriptador.encode(senha);
+        String primeiraSenha = UUID.randomUUID().toString().substring(0, 8);
+        String senhaCriptografada = encriptador.encode(primeiraSenha);
         Usuario usuario = usuarioRepository.save(new Usuario(nome, email, senhaCriptografada, perfil));
+        emailService.enviarEmailSenhaAleatoria(usuario, primeiraSenha);
         return usuario.getId();
     }
 
@@ -63,5 +64,24 @@ public class UsuarioService implements UserDetailsService {
         usuario.setExpiracaoToken(LocalDateTime.now().plusMinutes(15));
         usuarioRepository.save(usuario);
         emailService.enviarEmailSenha(usuario);
+    }
+
+    public void recuperarConta(String codigo, DadosRecuperacaoConta dados) {
+        Usuario usuario = usuarioRepository.findByTokenIgnoreCase(codigo).orElseThrow(() -> new RegraDeNegocioException("Link inválido!"));
+
+        if(usuario.getExpiracaoToken().isBefore(LocalDateTime.now())) {
+            throw new RegraDeNegocioException("Link expirado!");
+        }
+
+        if(!dados.novaSenha().equals(dados.novaSenhaConfirmacao())) {
+            throw new RegraDeNegocioException("Senha e confirmação devem coincidir!");
+        }
+
+        String senhaCriptografada = encriptador.encode(dados.novaSenha());
+        usuario.alterarSenha(senhaCriptografada);
+
+        usuario.setToken(null);
+        usuario.setExpiracaoToken(null);
+        usuarioRepository.save(usuario);
     }
 }
